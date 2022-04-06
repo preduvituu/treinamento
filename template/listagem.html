@@ -10,5 +10,12 @@
 <body>
    <a href="{% url 'cadastro_produto' %}"><button class="btn btn-primary">Novo</button></a>
    <a href="{% url 'carrinho' %}" ><button class="btn btn-primary">Carrinho</button></a>
+   <br>
+   <ul>
+   {% for produto in produtos %}
+        <li>{{ produto.nome }} | R${{ produto.valor }} | {{ produto.categoria }} <a href="{% url 'detalhes' produto.id %}">DETALHES</a></li>
+        <br>
+   {% endfor %}
+    </ul>
 </body>
 </html>

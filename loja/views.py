@@ -1,6 +1,6 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, get_list_or_404, redirect, render
+from .forms import CategoriaForm, ProdutoForm
 from .models import Produto
-from .forms import ProdutoForm
 
 def listagem(request):
     produtos = Produto.objects.all()
@@ -9,17 +9,30 @@ def listagem(request):
     }
     return render(request, 'listagem.html', produtos_a_exibir)
 
+def cadastro_categoria(request):
+    formulario = {}
+    form = CategoriaForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("cadastro_produto")
+    formulario['form'] = form
+    return render(request, 'cadastro_categoria.html', formulario)
+
 def cadastro_produto(request):
     formulario = {}
     form = ProdutoForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect("url_listagem")
+        return redirect("listagem")
     formulario['form'] = form
     return render(request, 'cadastro_produto.html', formulario)
 
 def carrinho(request):
     return render(request, 'carrinho.html')
 
-def detalhes(request):
-    pass
+def detalhes(request, produto_id):
+    produtos = get_object_or_404(Produto, pk=produto_id)
+    produtos_a_exibir = {
+        'produto': produtos
+    }
+    return render(request, 'detalhes.html', produtos_a_exibir)
