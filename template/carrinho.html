@@ -8,6 +8,10 @@
     <title>Carro</title>
 </head>
 <body>
-    <p>vrum vrum</p>
+    {% for carro in carrinho %}
+        <ul>
+            <li>{{ carro.produto.nome }}</li>
+        </ul>
+    {% endfor %}
 </body>
 </html>

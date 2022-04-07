@@ -8,12 +8,16 @@
     <title>Área de Cadastro - Categoria</title>
 </head>
 <body>
+    {% include 'partials/_nav.html' %}
+    <div style="padding-top: 15px; text-align: center;">
+        <p style="font-weight: bolder;">Cadastro de categorias de produtos</p>
     <form method="POST">
         {% csrf_token %}
 
         {{ form.as_p }}
 
-        <button type="submit" method="POST">Salvar</button>
+        <button class="btn btn-primary" type="submit" method="POST">Salvar</button>
     </form>
+    </div>
 </body>
 </html>

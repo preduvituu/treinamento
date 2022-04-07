@@ -5,8 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes</title>
+
 </head>
 <body>
-    <p>O produto é um(a) {{ produto.nome }}, seu valor é de R${{ produto.valor }} e é da categoria {{ produto.categoria }} </p>
+    <p>O produto é um(a) {{ produtos.nome }}, seu valor é de R${{ produtos.valor }} e é da categoria {{ produtos.categoria.nome }} </p>
+    <p>
+        O produto está no carro {{ produtos.produto_carro.id }}
+    </p>
 </body>
 </html>

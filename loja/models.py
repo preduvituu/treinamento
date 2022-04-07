@@ -9,8 +9,9 @@ class Categoria(models.Model):
 class Produto(models.Model):
     nome = models.CharField(max_length=30)
     valor = models.FloatField()
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, blank=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, default=1)
+    vendido = models.BooleanField(default=False)
 
 class Carro(models.Model):
-    produto = models.ForeignKey(Produto, on_delete=models.DO_NOTHING)
+    produto = models.OneToOneField(Produto, on_delete=models.DO_NOTHING, related_name="produto_carro")
 
