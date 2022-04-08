@@ -1,3 +1,4 @@
+from unicodedata import decimal
 from django.db import models
 
 class Categoria(models.Model):

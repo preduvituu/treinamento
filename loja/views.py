@@ -2,20 +2,11 @@ from django.shortcuts import get_object_or_404, get_list_or_404, redirect, rende
 from .forms import CategoriaForm, ProdutoForm
 from .models import Produto, Carro
 
-def listagem(request):
-    produtos = Produto.objects.all()
-    produtos_a_exibir = {
-        'produtos': produtos
-    }
-    return render(request, 'listagem.html', produtos_a_exibir)
 
 def cadastro_categoria(request):
     formulario = {}
     form = CategoriaForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect("cadastro_produto")
-    formulario['form'] = form
+    if form.is_valid():dutos_ca= form
     return render(request, 'cadastro_categoria.html', formulario)
 
 def cadastro_produto(request):
@@ -29,10 +20,11 @@ def cadastro_produto(request):
     return render(request, 'cadastro_produto.html', formulario)
 
 def carrinho(request):
-    produto = Produto.objects.get(id=int(request.GET.get('produto_id')))
-    Carro.objects.create(
-        produto=produto
-    )
+    if 'produto_id' in request.GET:
+        produto = Produto.objects.get(id=int(request.GET.get('produto_id')))
+        Carro.objects.create(
+            produto=produto
+        )
     produtos_carrinho = {
         'carrinho': Carro.objects.all()
     }
@@ -45,3 +37,10 @@ def detalhes(request, produto_id):
     }
     return render(request, 'detalhes.html', produtos_a_exibir)
 
+def listagem(request):
+    produtos_carro = Carro.objects.all()
+    produtos = Produto.objects.filter(id__in=list(produtos_carro.values_list('produto_id', flat=True)))
+    dados = {
+        'produtos': produtos
+    }
+    return render(request, 'listagem.html', dados)

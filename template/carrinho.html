@@ -8,10 +8,28 @@
     <title>Carro</title>
 </head>
 <body>
-    {% for carro in carrinho %}
-        <ul>
-            <li>{{ carro.produto.nome }}</li>
-        </ul>
-    {% endfor %}
+    {% include 'partials/_nav.html' %}
+     <div style="padding-top: 15px; text-align: center; padding-left: 43vw;">   
+         <table>
+
+            <thead>
+                    <th>Produtos que constam no carrinho:</th>
+            </thead>
+
+            <tbody>
+            {% for carro in carrinho %}
+            <tr>
+                <td>
+                    {{ carro.produto.nome }} | R${{ carro.produto.valor }} | {{ carro.produto.categoria }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form action="{% url 'update' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Comprar</button>
+        </form>
+    </div>
 </body>
 </html>

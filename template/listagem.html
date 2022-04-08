@@ -26,14 +26,14 @@
                 <th></th>
             </tr>
        </thead>
-       <tbody>
+       <tbody> 
         {% for produto in produtos %}
             <tr>
                 <td>{{ produto.nome }}</td>
                 <td>R${{ produto.valor }}</td>
                 <td>{{ produto.categoria }}</td>
                 <td>
-                    {% if produto.vendido %}
+                    {% if not produto.vendido %}
                         SIM
                     {% else %}
                         NÃO
