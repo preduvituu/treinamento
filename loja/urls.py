@@ -7,4 +7,5 @@ urlpatterns = [
     path('cadastro_categoria/', views.cadastro_categoria, name='cadastro_categoria'),
     path('carrinho/', views.carrinho, name='carrinho'),
     path('detalhe/<int:produto_id>', views.detalhes, name='detalhes'),
+    path('update/', views.update, name='update')
 ]

@@ -1,12 +1,23 @@
+from socket import SOMAXCONN
 from django.shortcuts import get_object_or_404, get_list_or_404, redirect, render
 from .forms import CategoriaForm, ProdutoForm
 from .models import Produto, Carro
 
 
+def listagem(request):
+    produtos = Produto.objects.all()
+    produtos_a_exibir = {
+        'produtos': produtos
+    }
+    return render(request, 'listagem.html', produtos_a_exibir)
+
 def cadastro_categoria(request):
     formulario = {}
     form = CategoriaForm(request.POST or None)
-    if form.is_valid():dutos_ca= form
+    if form.is_valid():
+        form.save()
+        return redirect("listagem")
+    formulario['form'] = form
     return render(request, 'cadastro_categoria.html', formulario)
 
 def cadastro_produto(request):
@@ -17,6 +28,7 @@ def cadastro_produto(request):
         form.save()
         return redirect("listagem")
     formulario['form'] = form
+    
     return render(request, 'cadastro_produto.html', formulario)
 
 def carrinho(request):
@@ -25,9 +37,13 @@ def carrinho(request):
         Carro.objects.create(
             produto=produto
         )
+    soma = 0
+    for c in Carro.objects.all():
+        soma += c.produto.valor
+
     produtos_carrinho = {
-        'carrinho': Carro.objects.all()
-    }
+        'carrinho': Carro.objects.all(), 'soma':soma
+        }
     return render(request, 'carrinho.html', produtos_carrinho)
 
 def detalhes(request, produto_id):
@@ -37,10 +53,13 @@ def detalhes(request, produto_id):
     }
     return render(request, 'detalhes.html', produtos_a_exibir)
 
-def listagem(request):
+def update(request):
     produtos_carro = Carro.objects.all()
     produtos = Produto.objects.filter(id__in=list(produtos_carro.values_list('produto_id', flat=True)))
-    dados = {
-        'produtos': produtos
-    }
-    return render(request, 'listagem.html', dados)
+    for produto in produtos:
+        produto.vendido = True
+        produto.save()
+    carro = Carro.objects.all()
+    carro.delete()
+    return redirect('listagem')
+    return render(request, 'listagem.html')

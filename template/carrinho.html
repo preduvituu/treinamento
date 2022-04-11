@@ -18,17 +18,24 @@
 
             <tbody>
             {% for carro in carrinho %}
+            {% if not carro.produto.vendido %}
             <tr>
                 <td>
                     {{ carro.produto.nome }} | R${{ carro.produto.valor }} | {{ carro.produto.categoria }}
                 </td>
             </tr>
+            {% endif %}
             {% endfor %}
+            <tr>
+                <td>
+                    <p><b>Valor total do carrinho: </b>R${{ soma }}</p>
+                </td>
+            </tr>
             </tbody>
         </table>
         <form action="{% url 'update' %}" method="POST">
             {% csrf_token %}
-            <button type="submit">Comprar</button>
+            <a type='submit' href="{% url 'listagem' %}"><button method="POST" class="btn btn-primary">Comprar</button></a>
         </form>
     </div>
 </body>
