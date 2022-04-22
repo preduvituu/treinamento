@@ -1,15 +1,18 @@
-from socket import SOMAXCONN
-from django.shortcuts import get_object_or_404, get_list_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import CategoriaForm, ProdutoForm
 from .models import Produto, Carro
-
+from django.contrib import messages
 
 def listagem(request):
-    produtos = Produto.objects.all()
-    produtos_a_exibir = {
-        'produtos': produtos
-    }
-    return render(request, 'listagem.html', produtos_a_exibir)
+    if request.user.is_authenticated:
+        produtos = Produto.objects.all()
+        produtos_a_exibir = {
+            'produtos': produtos
+        }
+        messages.success(request, 'Login feito com sucesso!')
+        return render(request, 'listagem.html', produtos_a_exibir)
+    else:
+        redirect('login')
 
 def cadastro_categoria(request):
     formulario = {}
@@ -19,6 +22,7 @@ def cadastro_categoria(request):
         return redirect("listagem")
     formulario['form'] = form
     return render(request, 'cadastro_categoria.html', formulario)
+    
 
 def cadastro_produto(request):
     formulario = {}
@@ -62,4 +66,3 @@ def update(request):
     carro = Carro.objects.all()
     carro.delete()
     return redirect('listagem')
-    return render(request, 'listagem.html')
