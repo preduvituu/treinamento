@@ -1,6 +1,7 @@
 from unicodedata import decimal
 from django.db import models
 
+
 class Categoria(models.Model):
     nome = models.CharField(max_length=30)
 
@@ -13,6 +14,12 @@ class Produto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, default=1)
     vendido = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.nome
+
+
 class Carro(models.Model):
     produto = models.OneToOneField(Produto, on_delete=models.DO_NOTHING, related_name="produto_carro")
 
+    def __str__(self):
+        return self.produto.nome

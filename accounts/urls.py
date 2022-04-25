@@ -1,10 +1,13 @@
 from django.urls import path
-from . import views
+from django.contrib.auth.decorators import login_required
+from accounts.views import (
+    login, logout, cadastro
+)
 
-urlpatterns = [ 
-    path('', views.login, name='index_dashboard'),
-    path('login/', views.login, name='login'),
-    path('logout/', views.logout, name='logout'),
-    path('cadastro/', views.cadastro, name='cadastro'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+
+urlpatterns = [
+    path('', login, name='login'),
+    path('account/login/', login, name='login'),
+    path('account/logout/', login_required(logout), name='logout'),
+    path('account/cadastro/', cadastro, name='cadastro'),
 ]

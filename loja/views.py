@@ -1,20 +1,16 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from .forms import CategoriaForm, ProdutoForm
 from .models import Produto, Carro
-from django.contrib import messages
+from django.db.models import Sum
 
 def listagem(request):
-    if request.user.is_authenticated:
-        produtos = Produto.objects.all()
-        produtos_a_exibir = {
-            'produtos': produtos
-        }
-        messages.success(request, 'Login feito com sucesso!')
-        return render(request, 'listagem.html', produtos_a_exibir)
-    else:
-        redirect('login')
+    context = {}
+    context['produtos'] = Produto.objects.all()
+    return render(request, 'listagem.html', context)
 
-def cadastro_categoria(request):
+
+def cadastroCategoria(request):
     formulario = {}
     form = CategoriaForm(request.POST or None)
     if form.is_valid():
@@ -24,45 +20,38 @@ def cadastro_categoria(request):
     return render(request, 'cadastro_categoria.html', formulario)
     
 
-def cadastro_produto(request):
-    formulario = {}
+def cadastroProduto(request):
+    context = {}
     form = ProdutoForm(request.POST or None)
     if form.is_valid():
-        # import pdb; pdb.set_trace()
         form.save()
         return redirect("listagem")
-    formulario['form'] = form
-    
-    return render(request, 'cadastro_produto.html', formulario)
+    context['form'] = form
+    return render(request, 'cadastro_produto.html', context)
 
-def carrinho(request):
-    if 'produto_id' in request.GET:
-        produto = Produto.objects.get(id=int(request.GET.get('produto_id')))
-        Carro.objects.create(
-            produto=produto
-        )
-    soma = 0
-    for c in Carro.objects.all():
-        soma += c.produto.valor
 
-    produtos_carrinho = {
-        'carrinho': Carro.objects.all(), 'soma':soma
-        }
-    return render(request, 'carrinho.html', produtos_carrinho)
+def carrinho(request, pk_produto):
 
-def detalhes(request, produto_id):
-    produtos = get_object_or_404(Produto, pk=produto_id)
-    produtos_a_exibir = {
-        'produtos': produtos
-    }
-    return render(request, 'detalhes.html', produtos_a_exibir)
+    if True if request.GET.get('add') == 'True' else False:
+        produto = Produto.objects.get(id=pk_produto)
+        carro = Carro.objects.update_or_create(produto=produto)
+        return redirect(reverse('carrinho', args=[carro[0].id]))
 
-def update(request):
+    context = {}
+    context['carrinho'] = Carro.objects.all()
+    context['valor_total'] = Carro.objects.all().aggregate(Sum('produto__valor'))
+    return render(request, 'carrinho.html', context)
+
+
+def detalhes(request, pk):
+    context = {}
+    context['produto'] = get_object_or_404(Produto, pk=pk)
+    return render(request, 'detalhes.html', context)
+
+
+def comprarCarrinho(request):
     produtos_carro = Carro.objects.all()
-    produtos = Produto.objects.filter(id__in=list(produtos_carro.values_list('produto_id', flat=True)))
-    for produto in produtos:
-        produto.vendido = True
-        produto.save()
-    carro = Carro.objects.all()
-    carro.delete()
+    for produto in produtos_carro:
+        produto.produto.vendido = True
+        produto.produto.save()
     return redirect('listagem')

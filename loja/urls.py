@@ -1,11 +1,15 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
-from loja import views
+from loja.views import (
+    listagem, cadastroCategoria, cadastroProduto, carrinho, detalhes, comprarCarrinho
+)
+
 
 urlpatterns = [
-    path('', views.listagem, name='listagem'),
-    path('cadastro_produto/', views.cadastro_produto, name='cadastro_produto'),
-    path('cadastro_categoria/', views.cadastro_categoria, name='cadastro_categoria'),
-    path('carrinho/', views.carrinho, name='carrinho'),
-    path('detalhe/<int:produto_id>', views.detalhes, name='detalhes'),
-    path('update/', views.update, name='update')
+    path('', login_required(listagem), name='listagem'),
+    path('nova/categoria/', login_required(cadastroCategoria), name='cadastro_categoria'),
+    path('novo/produto/', login_required(cadastroProduto), name='cadastro_produto'),
+    path('detalhe/<int:pk>/', login_required(detalhes), name='detalhes'),
+    path('carrinho/<int:pk_produto>/', login_required(carrinho), name='carrinho'),
+    path('camprar/carrinho/', login_required(comprarCarrinho), name='comprar_carrinho')
 ]
